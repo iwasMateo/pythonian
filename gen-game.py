@@ -1,7 +1,7 @@
 import pygame
 import math
 pygame.init()
-screen = pygame.display.set_mode((800, 600))
+screen = pygame.display.set_mode((600, 600))
 pygame.display.set_caption("Walking Ant")
 clock = pygame.time.Clock()
 running = True
@@ -77,6 +77,24 @@ class Dot:
             self.x += dx * move_speed
             self.y += dy * move_speed
 
+def autoWalk(target):
+    foot1walked=0
+    foot1walk = False
+    foot2walked=0
+    foot2walk = False
+    BodyTargetMid = Middlepoint(Body, target)
+    if getDistance(Foot1, target) > getDistance(Foot2, target):
+        if foot1walked >= 30:
+            foot1walk = True
+    else: 
+        foot1walk = False
+        foot1walked = 0
+    foot1col = screen.get_at((int(Foot1.x), int(Foot1.y)))
+    if foot1walk:
+        if not foot1col == (175, 222, 209):
+            Foot1.moveTowards(target, 1)
+            foot1walked+=1
+
 Body = Dot(100, 100, 12, BLACK, 1)
 Ankle1 = Dot(150, 150, 8, RED, 5)
 Ankle2 = Dot(50, 50, 8, GREEN, 5)
@@ -87,17 +105,20 @@ Anklemid = Middlepoint(Ankle1, Ankle2)
 Bodmid1= Middlepoint(Body, Ankle1)
 Bodmid2= Middlepoint(Body, Ankle2)
 autowalk = False
-last_toggle_time = 0
+last_toggle_time = 0 
+
 while running:
+    buttons = pygame.mouse.get_pressed()
     for event in pygame.event.get():
         if event.type==pygame.QUIT:
             running=False
-        if event.type==pygame.MOUSEBUTTONDOWN:
+        if buttons[0]:
             target.x, target.y = pygame.mouse.get_pos()
             
     screen.fill(WHITE)
     x, y = pygame.mouse.get_pos()
     keys = pygame.key.get_pressed()
+    pygame.draw.line(screen, (175, 222, 209), (target.x, target.y), (Body.x, Body.y), 20)
     Body.draw(screen)
     Ankle1.draw(screen)
     Ankle2.draw(screen)
@@ -114,24 +135,28 @@ while running:
                 last_toggle_time = current_time
                 print("Toggled:", autowalk)
     # print("Distance:", getDistance(Body, Ankle1))
-    if getDistance(Body, Ankle1) < 75: # and getDistance(Body, Ankle1) > 20:
-        Ankle1.arrow_move(keys)
-    else:
-        Ankle1.moveTowards(Body, 1)
-    if getDistance(Body, Ankle2) < 75: # and getDistance(Body, Ankle2) > 20:
-        Ankle2.wasd_move(keys)
-    else:
-        Ankle2.moveTowards(Body, 1)
-    if getDistance(Bodmid1, Foot1) > 10:
-        Foot1.moveTowards(Bodmid1, 2*(getDistance(Bodmid1, Foot1)/10))
-    if getDistance(Bodmid2, Foot2) > 10:
-        Foot2.moveTowards(Bodmid2, 2*(getDistance(Bodmid2, Foot2)/10))
-    if getDistance(Body, Anklemid) > 5:
-        Body.moveTowards(Anklemid, 1)
+    if not autowalk:
+        if getDistance(Body, Ankle1) < 75: # and getDistance(Body, Ankle1) > 20:
+            Ankle1.arrow_move(keys)
+        else:
+            Ankle1.moveTowards(Body, 1)
+        if getDistance(Body, Ankle2) < 75: # and getDistance(Body, Ankle2) > 20:
+            Ankle2.wasd_move(keys)
+        else:
+            Ankle2.moveTowards(Body, 1)
+        if getDistance(Bodmid1, Foot1) > 10:
+            Foot1.moveTowards(Bodmid1, 2*(getDistance(Bodmid1, Foot1)/10))
+        if getDistance(Bodmid2, Foot2) > 10:
+            Foot2.moveTowards(Bodmid2, 2*(getDistance(Bodmid2, Foot2)/10))
+        if getDistance(Body, Anklemid) > 5:
+            Body.moveTowards(Anklemid, 1)
+    if autowalk:
+        autoWalk(target)
     pygame.draw.line(screen, (0,0,0), (Foot1.x, Foot1.y), (Ankle1.x, Ankle1.y), 3)
     pygame.draw.line(screen, (0,0,0), (Foot2.x, Foot2.y), (Ankle2.x, Ankle2.y), 3)
     pygame.draw.line(screen, (0,0,0), (Foot1.x, Foot1.y), (Body.x, Body.y), 3)
     pygame.draw.line(screen, (0,0,0), (Foot2.x, Foot2.y), (Body.x, Body.y), 3)
+    
     # pygame.draw.line(screen, BLUE, (Ankle1.x, Ankle1.y), (Ankle2.x, Ankle2.y), 3)    
     pygame.display.flip()
     clock.tick(60)
