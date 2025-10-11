@@ -10,6 +10,8 @@ RED = (255, 0, 0)
 BLUE = (0, 0, 255)
 BLACK = (0, 0, 0)
 GREEN = (0, 255, 0)
+PURPLE = (128, 0, 128)
+CYAN = (0, 255, 255)
 def getDistance(object1, object2):
     x1, y1 = object1.x, object1.y
     x2, y2 = object2.x, object2.y
@@ -35,15 +37,14 @@ class Middlepoint:
         return(self.object1.y+ self.object2.y)/2
 
 class Dot:
-    def __init__(self, x, y, width, height, color, speed):
+    def __init__(self, x, y, radius, color, speed):
         self.x = x
         self.y = y
-        self.width = width
-        self.height = height
+        self.radius = radius
         self.color = color
         self.speed = speed
     def draw(self, surface):
-        pygame.draw.rect(surface, self.color, (self.x-self.width/2, self.y-self.height/2, self.width, self.height))
+        pygame.draw.circle(surface, self.color, (self.x, self.y), self.radius)
 
     def arrow_move(self, keys):
         if keys[pygame.K_LEFT]:
@@ -76,36 +77,67 @@ class Dot:
             self.x += dx * move_speed
             self.y += dy * move_speed
 
-Body = Dot(100, 100, 40, 40, BLACK, 1)
-Ankle1 = Dot(150, 150, 20, 20, RED, 5)
-Ankle2 = Dot(50, 50, 20, 20, GREEN, 5)
+Body = Dot(100, 100, 12, BLACK, 1)
+Ankle1 = Dot(150, 150, 8, RED, 5)
+Ankle2 = Dot(50, 50, 8, GREEN, 5)
+Foot1 = Dot(190, 190, 9, PURPLE, 5)
+Foot2 = Dot(20, 20, 9, CYAN, 5)
+target = Dot(400, 300, 5, RED, 0)
 Anklemid = Middlepoint(Ankle1, Ankle2)
+Bodmid1= Middlepoint(Body, Ankle1)
+Bodmid2= Middlepoint(Body, Ankle2)
+foot1Walking = True
+autowalk = False
+last_toggle_time = 0
 while running:
-    for i in pygame.event.get():
-        if i.type==pygame.QUIT:
+    for event in pygame.event.get():
+        if event.type==pygame.QUIT:
             running=False
+        if event.type==pygame.MOUSEBUTTONDOWN:
+            target.x, target.y = pygame.mouse.get_pos()
+            
     screen.fill(WHITE)
-    
+    x, y = pygame.mouse.get_pos()
     keys = pygame.key.get_pressed()
     Body.draw(screen)
     Ankle1.draw(screen)
     Ankle2.draw(screen)
+    Foot1.draw(screen)
+    Foot2.draw(screen)
+    target.draw(screen)
+    if keys[pygame.K_ESCAPE]:
+        if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
+            current_time = pygame.time.get_ticks()  # current time in milliseconds
+
+            # Only allow toggle if at least 50ms (0.5 second) has passed
+            if current_time - last_toggle_time >= 500:
+                autowalk = not autowalk
+                last_toggle_time = current_time
+                print("Toggled:", autowalk)
     # print("Distance:", getDistance(Body, Ankle1))
     if getDistance(Body, Ankle1) < 75: # and getDistance(Body, Ankle1) > 20:
         Ankle1.arrow_move(keys)
     else:
-        pass
+        Ankle1.moveTowards(Body, 1)
     if getDistance(Body, Ankle2) < 75: # and getDistance(Body, Ankle2) > 20:
         Ankle2.wasd_move(keys)
     else:
-        pass
+        Ankle2.moveTowards(Body, 1)
+    if getDistance(Bodmid1, Foot1) > 10:
+        Foot1.moveTowards(Bodmid1, 2*(getDistance(Bodmid1, Foot1)/10))
+    if getDistance(Bodmid2, Foot2) > 10:
+        Foot2.moveTowards(Bodmid2, 2*(getDistance(Bodmid2, Foot2)/10))
     if getDistance(Body, Anklemid) > 5:
         Body.moveTowards(Anklemid, 1)
-    pygame.draw.line(screen, (0,0,0), (Body.x, Body.y), (Ankle1.x, Ankle1.y), 3)
-    pygame.draw.line(screen, (0,0,0), (Body.x, Body.y), (Ankle2.x, Ankle2.y), 3)
-    pygame.draw.line(screen, BLUE, (Ankle1.x, Ankle1.y), (Ankle2.x, Ankle2.y), 3)    
+    pygame.draw.line(screen, (0,0,0), (Foot1.x, Foot1.y), (Ankle1.x, Ankle1.y), 3)
+    pygame.draw.line(screen, (0,0,0), (Foot2.x, Foot2.y), (Ankle2.x, Ankle2.y), 3)
+    pygame.draw.line(screen, (0,0,0), (Foot1.x, Foot1.y), (Body.x, Body.y), 3)
+    pygame.draw.line(screen, (0,0,0), (Foot2.x, Foot2.y), (Body.x, Body.y), 3)
+    # pygame.draw.line(screen, BLUE, (Ankle1.x, Ankle1.y), (Ankle2.x, Ankle2.y), 3)    
     pygame.display.flip()
     clock.tick(60)
-    print(Anklemid.x,Anklemid.y)
+    # print(Anklemid.x,Anklemid.y)
+    
 
 pygame.quit()
+
