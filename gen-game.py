@@ -86,7 +86,6 @@ target = Dot(400, 300, 5, RED, 0)
 Anklemid = Middlepoint(Ankle1, Ankle2)
 Bodmid1= Middlepoint(Body, Ankle1)
 Bodmid2= Middlepoint(Body, Ankle2)
-foot1Walking = True
 autowalk = False
 last_toggle_time = 0
 while running:
