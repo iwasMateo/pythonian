@@ -124,7 +124,7 @@ target = Dot(400, 300, 5, RED, 0)
 Anklemid = Middlepoint(Ankle1, Ankle2)
 Bodmid1= Middlepoint(Body, Ankle1)
 Bodmid2= Middlepoint(Body, Ankle2)
-autowalk = False
+autowalk = True
 last_toggle_time = 0 
 
 while running:
@@ -134,7 +134,7 @@ while running:
             running=False
         if buttons[0]:
             target.x, target.y = pygame.mouse.get_pos()
-        if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
+        if event.type == pygame.KEYDOWN and event.key == pygame.K_TAB:
             current_time = pygame.time.get_ticks()
             if current_time - last_toggle_time >= 500:
                 autowalk = not autowalk
@@ -168,8 +168,8 @@ while running:
             Foot2.moveTowards(Bodmid2, 2*(getDistance(Bodmid2, Foot2)/10))
         if getDistance(Body, Anklemid) > 5:
             Body.moveTowards(Anklemid, 1)
-    elif autowalk:
-        autoWalk(target)
+    
+    autoWalk(target)
     pygame.draw.line(screen, (0,0,0), (Foot1.x, Foot1.y), (Ankle1.x, Ankle1.y), 3)
     pygame.draw.line(screen, (0,0,0), (Foot2.x, Foot2.y), (Ankle2.x, Ankle2.y), 3)
     pygame.draw.line(screen, (0,0,0), (Foot1.x, Foot1.y), (Body.x, Body.y), 3)
