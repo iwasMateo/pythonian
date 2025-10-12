@@ -180,48 +180,47 @@ Bodmid2= Middlepoint(Body, Ankle2)
 autowalk = True
 last_toggle_time = 0 
 # game loop
-while running:
-    buttons = pygame.mouse.get_pressed()
-    for event in pygame.event.get():
-        if event.type==pygame.QUIT:
-            running=False
-        if buttons[0]:
-            target.x, target.y = pygame.mouse.get_pos()
-        if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
-            current_time = pygame.time.get_ticks()
-            if current_time - last_toggle_time >= 500:
-                autowalk = not autowalk
-                last_toggle_time = current_time
-                print("Toggled autowalk:", autowalk)
-        # print(event)
-            
-    screen.fill(WHITE)
-    x, y = pygame.mouse.get_pos()
-    keys = pygame.key.get_pressed()
-    pygame.draw.line(screen, (175, 222, 209), (target.x, target.y), (Body.x, Body.y), 5)
-    Body.draw(screen)
-    Ankle1.draw(screen)
-    Ankle2.draw(screen)
-    Foot1.draw(screen)
-    Foot2.draw(screen)
-    target.draw(screen)
-    
-    # print("Distance:", getDistance(Body, Ankle1))
-    if not autowalk:
-        normalPhysWalk()
-        # print("Normal walking")
-    elif autowalk:
-        normalPhysWalk()
-        autoWalk(target)
-        # print("Auto walking")
-    pygame.draw.line(screen, (0,0,0), (Foot1.x, Foot1.y), (Ankle1.x, Ankle1.y), 3)
-    pygame.draw.line(screen, (0,0,0), (Foot2.x, Foot2.y), (Ankle2.x, Ankle2.y), 3)
-    pygame.draw.line(screen, (0,0,0), (Foot1.x, Foot1.y), (Body.x, Body.y), 3)
-    pygame.draw.line(screen, (0,0,0), (Foot2.x, Foot2.y), (Body.x, Body.y), 3)
-    
-    # pygame.draw.line(screen, BLUE, (Ankle1.x, Ankle1.y), (Ankle2.x, Ankle2.y), 3)    
-    pygame.display.flip()
-    clock.tick(60)
-    # print(Anklemid.x,Anklemid.y)
+buttons = pygame.mouse.get_pressed()
+for event in pygame.event.get():
+    if event.type==pygame.QUIT:
+        running=False
+    if buttons[0]:
+        target.x, target.y = pygame.mouse.get_pos()
+    if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
+        current_time = pygame.time.get_ticks()
+        if current_time - last_toggle_time >= 500:
+            autowalk = not autowalk
+            last_toggle_time = current_time
+            print("Toggled autowalk:", autowalk)
+    # print(event)
+        
+screen.fill(WHITE)
+x, y = pygame.mouse.get_pos()
+keys = pygame.key.get_pressed()
+pygame.draw.line(screen, (175, 222, 209), (target.x, target.y), (Body.x, Body.y), 5)
+Body.draw(screen)
+Ankle1.draw(screen)
+Ankle2.draw(screen)
+Foot1.draw(screen)
+Foot2.draw(screen)
+target.draw(screen)
+
+# print("Distance:", getDistance(Body, Ankle1))
+if not autowalk:
+    normalPhysWalk()
+    # print("Normal walking")
+elif autowalk:
+    normalPhysWalk()
+    autoWalk(target)
+    # print("Auto walking")
+pygame.draw.line(screen, (0,0,0), (Foot1.x, Foot1.y), (Ankle1.x, Ankle1.y), 3)
+pygame.draw.line(screen, (0,0,0), (Foot2.x, Foot2.y), (Ankle2.x, Ankle2.y), 3)
+pygame.draw.line(screen, (0,0,0), (Foot1.x, Foot1.y), (Body.x, Body.y), 3)
+pygame.draw.line(screen, (0,0,0), (Foot2.x, Foot2.y), (Body.x, Body.y), 3)
+
+# pygame.draw.line(screen, BLUE, (Ankle1.x, Ankle1.y), (Ankle2.x, Ankle2.y), 3)    
+pygame.display.flip()
+clock.tick(60)
+# print(Anklemid.x,Anklemid.y)
 
 pygame.quit()
