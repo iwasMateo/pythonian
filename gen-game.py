@@ -75,12 +75,14 @@ class Dot:
             self.x += dx * move_speed
             self.y += dy * move_speed
 def normalPhysWalk():
+    # When I am allowed to move
     if getDistance(Body, Ankle1) < 75: # and getDistance(Body, Ankle1) > 20:
         Ankle1.arrow_move(keys)
     else:
         Ankle1.moveTowards(Body, 1)
     if getDistance(Body, Ankle2) < 75: # and getDistance(Body, Ankle2) > 20:
         Ankle2.wasd_move(keys)
+    # Making sure that the individual body parts don't get ripped to shreds
     else:
         Ankle2.moveTowards(Body, 1)
     if getDistance(Bodmid1, Foot1) > 10:
@@ -94,8 +96,10 @@ foot1walk = False
 foot2walked=0
 foot2walk = False
 def autoWalk(target):
+    # Basically the point of the entire program lol
     global foot1walked, foot1walk, foot2walked, foot2walk
     BodyTargetMid = Middlepoint(Body, target)
+    # Old Version of the code that I wanted to preserve
     #if getDistance(Foot1, target) < getDistance(Foot2, target):
     #    print("Foot1 closer")
     #    foot1walk = False
@@ -121,6 +125,7 @@ def autoWalk(target):
     #        Foot1.moveTowards(target, 1)
     #        foot1walked+=1
     if getDistance(Body, target) > 20:
+        # The actual walk cycle (working this time)
         if foot1walk:
             if foot1walked <= 60:
                 A = pygame.Vector2(Foot1.x, Foot1.y)
@@ -162,7 +167,7 @@ def autoWalk(target):
                 print("Foot1 walking")
     else:
         print("At target")
-
+# All used Body parts
 Body = Dot(100, 100, 12, BLACK, 1)
 Ankle1 = Dot(150, 150, 8, RED, 5)
 Ankle2 = Dot(50, 50, 8, GREEN, 5)
@@ -174,7 +179,7 @@ Bodmid1= Middlepoint(Body, Ankle1)
 Bodmid2= Middlepoint(Body, Ankle2)
 autowalk = True
 last_toggle_time = 0 
-
+# game loop
 while running:
     buttons = pygame.mouse.get_pressed()
     for event in pygame.event.get():
