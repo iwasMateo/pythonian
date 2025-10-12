@@ -96,48 +96,72 @@ foot2walk = False
 def autoWalk(target):
     global foot1walked, foot1walk, foot2walked, foot2walk
     BodyTargetMid = Middlepoint(Body, target)
-    if getDistance(Foot1, target) < getDistance(Foot2, target):
-        print("Foot1 closer")
-        foot1walk = False
-        if foot2walked <= 30:
-            foot2walk = True
-            print("Foot2 walking")
-        else:
-            foot2walk = False
-            foot2walked = 0
-            print("Foot2 not walking")
-    else: 
-        print("Foot1 closer")
-        foot2walk = False
-        if foot1walked <= 30:
-            foot1walk = True
-            print("Foot1 walking")
-        else:
-            foot1walk = False
-            foot1walked = 0
-            print("Foot1 not walking")
+    #if getDistance(Foot1, target) < getDistance(Foot2, target):
+    #    print("Foot1 closer")
+    #    foot1walk = False
+    #    if foot2walked <= 30:
+    #        foot2walk = True
+    #        print("Foot2 walking")
+    #    else:
+    #        foot2walk = False
+    #        foot2walked = 0
+    #        print("Foot2 not walking")
+    #else: 
+    #    print("Foot1 closer")
+    #    foot2walk = False
+    #    if foot1walked <= 30:
+    #        foot1walk = True
+    #        print("Foot1 walking")
+    #    else:
+    #        foot1walk = False
+    #        foot1walked = 0
+    #        print("Foot1 not walking")
     #if foot1walk:
     #    if not foot1col == (175, 222, 209):
     #        Foot1.moveTowards(target, 1)
     #        foot1walked+=1
-    if foot1walk:
-        A = pygame.Vector2(Foot1.x, Foot1.y)
-        B = pygame.Vector2(target.x, target.y)
-        direction = (B - A).normalize()
-        left_direction = direction.rotate(-90)
-        final_point = B+left_direction*50
-        Ankle1.moveTowards(final_point, 1)
-        foot1walked += 1
-        print("Foot1 successfully walking to target")
-    if foot2walk:
-        A = pygame.Vector2(Foot2.x, Foot2.y)
-        B = pygame.Vector2(target.x, target.y)
-        direction = (B - A).normalize()
-        left_direction = direction.rotate(90)
-        final_point = B+left_direction*50
-        Ankle2.moveTowards(final_point, 1)
-        foot2walked += 1
-        print("Foot2 successfully walking to target")
+    if getDistance(Body, target) > 20:
+        if foot1walk:
+            if foot1walked <= 60:
+                A = pygame.Vector2(Foot1.x, Foot1.y)
+                B = pygame.Vector2(target.x, target.y)
+                direction = (B - A).normalize()
+                left_direction = direction.rotate(-90)
+                final_point = B+left_direction*50
+                Ankle1.moveTowards(final_point, 1)
+                foot1walked += 1
+                print("Foot1 successfully walking to target")
+            else:
+                foot1walk = False
+                foot1walked = 0
+                print("Foot1 not walking")
+        elif foot2walk:
+            if foot2walked <= 60:
+                A = pygame.Vector2(Foot2.x, Foot2.y)
+                B = pygame.Vector2(target.x, target.y)
+                direction = (B - A).normalize()
+                left_direction = direction.rotate(90)
+                final_point = B+left_direction*50
+                Ankle2.moveTowards(final_point, 1)
+                foot2walked += 1
+                print("Foot2 successfully walking to target")
+            else:
+                foot2walk = False
+                foot2walked = 0
+                print("Foot2 not walking")
+        else:
+            if getDistance(Foot1, target) < getDistance(Foot2, target):
+                print("Foot1 closer")
+                foot1walk = False
+                foot2walk = True
+                print("Foot2 walking")
+            else:
+                print("Foot2 closer")
+                foot2walk = False
+                foot1walk = True
+                print("Foot1 walking")
+    else:
+        print("At target")
 
 Body = Dot(100, 100, 12, BLACK, 1)
 Ankle1 = Dot(150, 150, 8, RED, 5)
