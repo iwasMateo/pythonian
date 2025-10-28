@@ -12,19 +12,20 @@ BLACK = (0, 0, 0)
 GREEN = (0, 255, 0)
 PURPLE = (128, 0, 128)
 CYAN = (0, 255, 255)
-def getDistance(object1, object2):
+def getDistance(object1, object2): # make a function to get te distance between two things
     x1, y1 = object1.x, object1.y
     x2, y2 = object2.x, object2.y
     return ((x2 - x1) ** 2 + (y2 - y1) ** 2) ** 0.5
-def getMiddlex(object1, object2):
+def getMiddlex(object1, object2): # get x of a middle point in between two objects
     x1 = object1.x
     x2 = object2.x
     return ((x1 + x2) / 2)
-def getMiddley(object1, object2):
+def getMiddley(object1, object2): # # get x of a middle point in between two objects
     y1 = object1.y
     y2 = object2.y
     return ((y1 + y2) / 2)
-class Middlepoint:
+class Middlepoint: # make a middle point
+                   # dunno why i did this seperate from the "getMiddlex" and "getMiddley" functions
     def __init__(self, object1, object2):
         self.object1 = object1
         self.object2 = object2
@@ -34,7 +35,7 @@ class Middlepoint:
     @property
     def y(self):
         return(self.object1.y+ self.object2.y)/2
-class Dot:
+class Dot: # make a playable dot
     def __init__(self, x, y, radius, color, speed):
         self.x = x
         self.y = y
@@ -44,7 +45,7 @@ class Dot:
     def draw(self, surface):
         pygame.draw.circle(surface, self.color, (self.x, self.y), self.radius)
 
-    def arrow_move(self, keys):
+    def arrow_move(self, keys): # check for arrow keys and move accordingly
         if keys[pygame.K_LEFT]:
             self.x -= self.speed
         if keys[pygame.K_RIGHT]:
@@ -53,7 +54,7 @@ class Dot:
             self.y -= self.speed
         if keys[pygame.K_DOWN]:
             self.y += self.speed
-    def wasd_move(self, keys):
+    def wasd_move(self, keys): # check for wasd keys and move accordingly
         if keys[pygame.K_a]:
             self.x -= self.speed
         if keys[pygame.K_d]:
@@ -62,9 +63,9 @@ class Dot:
             self.y -= self.speed
         if keys[pygame.K_s]:
             self.y += self.speed
-    def pos(self):
-        print("Position:", self.x, self.y)
-    def moveTowards(self, target, move_speed):
+    def pos(self): # get position
+        return( self.x, self.y)
+    def moveTowards(self, target, move_speed): # move towards a target
         dx = target.x - self.x
         dy = target.y - self.y
         dist = math.hypot(dx, dy)
@@ -74,7 +75,7 @@ class Dot:
 
             self.x += dx * move_speed
             self.y += dy * move_speed
-def normalPhysWalk():
+def normalPhysWalk(): # Give it a little bit of "Do not rip my legs off please"
     # When I am allowed to move
     if getDistance(Body, Ankle1) < 75: # and getDistance(Body, Ankle1) > 20:
         Ankle1.arrow_move(keys)
@@ -97,8 +98,8 @@ foot2walked=0
 foot2walk = False
 def autoWalk(target):
     # Basically the point of the entire program lol
-    global foot1walked, foot1walk, foot2walked, foot2walk
-    BodyTargetMid = Middlepoint(Body, target)
+    global foot1walked, foot1walk, foot2walked, foot2walk # "import" some of the stuff necessary
+    BodyTargetMid = Middlepoint(Body, target) # get the middle point of the target and the body
     # Old Version of the code that I wanted to preserve
     #if getDistance(Foot1, target) < getDistance(Foot2, target):
     #    print("Foot1 closer")
@@ -124,10 +125,10 @@ def autoWalk(target):
     #    if not foot1col == (175, 222, 209):
     #        Foot1.moveTowards(target, 1)
     #        foot1walked+=1
-    if getDistance(Body, target) > 20:
+    if getDistance(Body, target) > 20: # if it's further away than basically there then it does that
         # The actual walk cycle (working this time)
-        if foot1walk:
-            if foot1walked <= 60:
+        if foot1walk: # if foot1 is supposed to be walking
+            if foot1walked <= 60: # if the foot has not walked 60 pixels yet then
                 A = pygame.Vector2(Foot1.x, Foot1.y)
                 B = pygame.Vector2(target.x, target.y)
                 direction = (B - A).normalize()
@@ -136,11 +137,11 @@ def autoWalk(target):
                 Ankle1.moveTowards(final_point, 1)
                 foot1walked += 1
                 print("Foot1 successfully walking to target")
-            else:
+            else: # otherwise it's the other foots turn
                 foot1walk = False
                 foot1walked = 0
                 print("Foot1 not walking")
-        elif foot2walk:
+        elif foot2walk: # if foot2 is supposed to be walking then
             if foot2walked <= 60:
                 A = pygame.Vector2(Foot2.x, Foot2.y)
                 B = pygame.Vector2(target.x, target.y)
@@ -154,7 +155,7 @@ def autoWalk(target):
                 foot2walk = False
                 foot2walked = 0
                 print("Foot2 not walking")
-        else:
+        else: # if "not sure" then look which one should walk
             if getDistance(Foot1, target) < getDistance(Foot2, target):
                 print("Foot1 closer")
                 foot1walk = False
