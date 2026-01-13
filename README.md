@@ -7,5 +7,4 @@ pygame and python
 Probably not if not enough people submit issues etc.
 ## Do you use AI?
 No, I try to keep all my work AI free
-## Where should I contact you?
-Discord or any of the links in my profile
+
