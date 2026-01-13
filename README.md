@@ -5,6 +5,3 @@ I will most likely be the only Person to work on this
 pygame and python
 ## Will this get consistent updates?
 Probably not if not enough people submit issues etc.
-## Do you use AI?
-No, I try to keep all my work AI free
-
